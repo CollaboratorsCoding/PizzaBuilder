@@ -1,129 +1,142 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
+import _ from 'lodash';
+import { Form, Input, Checkbox, Button } from 'antd';
 
-import {Form, Input, Checkbox, Button, Alert} from 'antd';
 const FormItem = Form.Item;
 
 class RegistrationForm extends Component {
-    state = {
-        confirmDirty: false
-    };
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this
-            .props
-            .form
-            .validateFieldsAndScroll((err, values) => {
-                if (!err) {
-                    this
-                        .props
-                        .sendForm(values)
-                }
-            });
-    }
-    handleConfirmBlur = (e) => {
-        const value = e.target.value;
-        this.setState({
-            confirmDirty: this.state.confirmDirty || !!value
-        });
-    }
-    checkPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value.length < 8) {
-            callback('Минимум 8 символов')
-        } else if (value && value.length > 26) {
-            callback('Максимум 26 символов')
-        } else if (value && value !== form.getFieldValue('password')) {
-            callback('Пароли не совпадают');
-        } else {
-            callback();
-        }
-    }
+	state = {
+		confirmDirty: false,
+	};
 
-    checkConfirm = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields(['confirm'], {force: true});
-        }
-        callback();
-    }
+	componentDidUpdate(prevProps) {
+		const { error, form } = this.props;
 
-    render() {
-        const {getFieldDecorator} = this.props.form;
+		if (
+			!_.isEmpty(error) &&
+			error.type === 'form' &&
+			prevProps.error.message !== error.message
+		) {
+			form.setFields({
+				[_.get(error, 'formData.fieldName', '')]: {
+					value: _.get(error, 'formData.fieldValue', ''),
+					errors: [new Error(error.message)],
+				},
+			});
+		}
+	}
 
-        const formItemLayout = {};
-        const tailFormItemLayout = {};
-        const {errors} = this.props
-        let errorAlert = null;
-        if (errors.email) {
-            errorAlert = <Alert message={errors.email} type="error" showIcon/>
-        }
-        return (
+	handleSubmit = e => {
+		e.preventDefault();
+		this.props.form.validateFieldsAndScroll((err, values) => {
+			if (!err) {
+				this.props.sendForm(values);
+			}
+		});
+	};
 
-            <Form onSubmit={this.handleSubmit}>
+	compareToFirstPassword = (rule, value, cb) => {
+		const form = this.props.form;
+		if (value && value !== form.getFieldValue('password')) {
+			cb('Two passwords not match!');
+		} else {
+			this.checkPassword(value, cb);
+		}
+	};
 
-                <FormItem {...formItemLayout} label="E-mail" hasFeedback>
-                    {getFieldDecorator('email', {
-                        rules: [
-                            {
-                                type: 'email',
-                                message: 'Введи валидный E-mail'
-                            }, {
-                                required: true,
-                                message: 'Введи E-mail!'
-                            }
-                        ]
-                    })(<Input/>)}
-                    {errorAlert}
+	validateToNextPassword = (rule, value, cb) => {
+		const form = this.props.form;
+		if (value && this.state.confirmDirty) {
+			form.validateFields(['password_confirm'], { force: true });
+		}
+		this.checkPassword(value, cb);
+	};
 
-                </FormItem>
-                <FormItem {...formItemLayout} label="Пароль" hasFeedback>
-                    {getFieldDecorator('password', {
-                        rules: [
-                            {
-                                max: 26,
-                                message: 'Максимум 26 символов'
-                            }, {
-                                min: 8,
-                                message: 'Минимум 8 символов'
-                            }, {
-                                required: true,
-                                message: 'Введи пароль'
-                            }, {
-                                validator: this.checkConfirm
-                            }
-                        ]
-                    })(<Input type="password"/>)}
-                </FormItem>
-                <FormItem {...formItemLayout} label="Подтверждение пароля" hasFeedback>
-                    {getFieldDecorator('confirm', {
-                        rules: [
-                            {
-                                required: true,
-                                message: 'Введи пароль'
-                            }, {
-                                validator: this.checkPassword
-                            }
-                        ]
-                    })(<Input type="password" onBlur={this.handleConfirmBlur}/>)}
-                </FormItem>
+	handleConfirmBlur = e => {
+		const value = e.target.value;
+		this.setState(prevState => ({
+			confirmDirty: prevState.confirmDirty || !!value,
+		}));
+	};
 
-                <FormItem
-                    {...tailFormItemLayout}
-                    style={{
-                    marginBottom: 8
-                }}>
-                    {getFieldDecorator('agreement', {valuePropName: 'checked'})(
-                        <Checkbox>Прочитал условия
+	checkPassword = (value, callback) => {
+		if (value && value.length < 8) {
+			callback('Min 8 chars');
+		} else if (value && value.length > 26) {
+			callback('Max 26 chars');
+		} else {
+			callback();
+		}
+	};
 
-                        </Checkbox>
-                    )}
-                </FormItem>
-                <FormItem {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">Регистрация</Button>
-                </FormItem>
-            </Form>
-        );
-    }
+	checkConfirm = (rule, value, callback) => {
+		const form = this.props.form;
+		if (value && this.state.confirmDirty) {
+			form.validateFields(['confirm'], { force: true });
+		}
+		callback();
+	};
+
+	render() {
+		const { getFieldDecorator } = this.props.form;
+
+		return (
+			<Form onSubmit={this.handleSubmit}>
+				<FormItem label="E-mail" hasFeedback>
+					{getFieldDecorator('email', {
+						rules: [
+							{
+								type: 'email',
+								message: 'Not valid E-mail',
+							},
+							{
+								required: true,
+								message: 'Enter E-mail!',
+							},
+						],
+					})(<Input />)}
+				</FormItem>
+				<FormItem label="Password" hasFeedback>
+					{getFieldDecorator('password', {
+						rules: [
+							{
+								validator: this.validateToNextPassword,
+							},
+						],
+					})(<Input type="password" />)}
+				</FormItem>
+				<FormItem label="Confirm password" hasFeedback>
+					{getFieldDecorator('confirm', {
+						rules: [
+							{
+								validator: this.compareToFirstPassword,
+							},
+						],
+					})(
+						<Input
+							type="password"
+							onBlur={this.handleConfirmBlur}
+						/>
+					)}
+				</FormItem>
+
+				<FormItem
+					style={{
+						marginBottom: 8,
+					}}
+				>
+					{getFieldDecorator('agreement', {
+						valuePropName: 'checked',
+					})(<Checkbox>Accept</Checkbox>)}
+				</FormItem>
+				<FormItem>
+					<Button type="primary" htmlType="submit">
+						Sign Up
+					</Button>
+				</FormItem>
+			</Form>
+		);
+	}
 }
 
 export default Form.create()(RegistrationForm);

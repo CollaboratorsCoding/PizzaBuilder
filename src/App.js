@@ -2,90 +2,105 @@ import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Skeleton from './hoc/Skeleton';
 import { Spin } from 'antd';
-import PizzaMaker from './container/PizzaMaker/PizzaMaker';
-import Auth from './container/Auth/Auth';
+import Skeleton from './hoc/Skeleton';
 
-import Chat from './container/Chat/Chat';
+import Auth from './container/Auth/Auth';
+import PizzaMaker from './container/PizzaMaker/PizzaMaker';
 import Profile from './container/Profile/Profile';
 import Landing from './container/Landing/Landing';
 // import NotFound from './components/NotFound'
 import Logout from './components/Logout';
-import { authCheck, authLogout } from './store/actions/auth';
+import AuthActions from './store/actions/auth';
 
+const { authLogin, authRegister, authCheck, authLogout } = AuthActions;
 class App extends Component {
-  // componentDidMount () {   this.props.onTryAutoSignup(); }
-  componentWillMount = () => {
-    this.props.authCheck();
-  };
+	// componentDidMount () {   this.props.onTryAutoSignup(); }
+	componentWillMount = () => {
+		this.props.authCheck();
+	};
 
-  render() {
-    let routes = (
-      <div className="header">
-        <Spin size="large" />
-      </div>
-    );
+	render() {
+		const {
+			checkedAuth,
+			isLoggedIn,
+			user,
+			error,
+			logout,
+			handleLogin,
+			handleRegister,
+		} = this.props;
 
-    if (!this.props.isLoggedIn && this.props.loaded) {
-      routes = (
-        <Switch>
-          <Route path="/auth" component={Auth} />
-          <Route path="/" exact component={PizzaMaker} />
+		if (!checkedAuth) {
+			return (
+				<div className="header">
+					<Spin size="large" />
+				</div>
+			);
+		}
+		let routes;
 
-          <Redirect to="/" />
-        </Switch>
-      );
-    }
-    if (this.props.isLoggedIn && this.props.loaded) {
-      routes = (
-        <Switch>
-          {this.props.isAdmin ? (
-            <Route path="/landing" component={Landing} />
-          ) : null}
-          <Route path="/chat" component={Chat} />
+		if (!isLoggedIn) {
+			routes = (
+				<Switch>
+					<Route
+						path="/auth"
+						render={props => (
+							<Auth
+								{...props}
+								user={user}
+								error={error}
+								handleLogin={handleLogin}
+								handleRegister={handleRegister}
+							/>
+						)}
+					/>
+					<Route path="/" exact component={PizzaMaker} />
 
-          <Route path="/profile" exact component={Profile} />
-          <Route
-            path="/logout"
-            render={props => {
-              return <Logout {...props} logout={() => this.props.logout()} />;
-            }}
-          />
+					<Redirect to="/" />
+				</Switch>
+			);
+		}
+		if (isLoggedIn) {
+			routes = (
+				<Switch>
+					{user.isAdmin ? (
+						<Route path="/landing" component={Landing} />
+					) : null}
 
-          <Route path="/" exact component={PizzaMaker} />
-          <Redirect to="/" />
-        </Switch>
-      );
-    }
+					<Route path="/profile" exact component={Profile} />
+					<Route
+						path="/logout"
+						render={props => (
+							<Logout {...props} logout={() => logout()} />
+						)}
+					/>
 
-    return (
-      <BrowserRouter>
-        <Skeleton>{routes}</Skeleton>
-      </BrowserRouter>
-    );
-  }
+					<Route path="/" exact component={PizzaMaker} />
+					<Redirect to="/" />
+				</Switch>
+			);
+		}
+
+		return (
+			<BrowserRouter>
+				<Skeleton>{routes}</Skeleton>
+			</BrowserRouter>
+		);
+	}
 }
 
-const mapStateToProps = state => {
-  return {
-    isLoggedIn: state.auth.isLoggedIn,
-    isAdmin: state.auth.isAdmin,
-    loaded: state.auth.loaded
-  };
-};
-const mapDispatchToProps = dispatch => {
-  return {
-    authCheck: () => dispatch(authCheck()),
-    logout: () => dispatch(authLogout())
-  };
-};
-// const mapStateToProps = state => {   return {     isAuthenticated:
-// state.auth.token !== null   }; }; const mapDispatchToProps = dispatch => {
-// return {     onTryAutoSignup: () => dispatch( actions.authCheckState() )   };
-// };
+const mapStateToProps = state => ({
+	...state.auth,
+});
+const mapDispatchToProps = dispatch => ({
+	authCheck: () => dispatch(authCheck()),
+	logout: () => dispatch(authLogout()),
+	handleLogin: (token, userData) => dispatch(authLogin(token, userData)),
+	handleRegister: userData => dispatch(authRegister(userData)),
+});
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(App);
