@@ -1,0 +1,11 @@
+.error--404--header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 100vw;
+ }
+ .error--404--title {
+    font-size: 20em;
+    color: rgb(146, 99, 37);
+ }

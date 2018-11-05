@@ -1,0 +1,9 @@
+export const ADD_INGREDIENT = 'ADD_INGREDIENT';
+export const REMOVE_INGREDIENT = 'REMOVE_INGREDIENT';
+
+export const ADD_ORDER = 'ADD_ORDER';
+
+export const AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS';
+export const AUTH_CHECK_FAIL = 'AUTH_CHECK_FAIL';
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+export const AUTH_LOGIN = 'AUTH_LOGIN';

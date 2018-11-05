@@ -1,0 +1,31 @@
+.main--content {
+    padding-top: 40px;
+}
+.main--header {
+    height: 67px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgb(82, 103, 21);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 90;
+}
+
+.main--header nav {
+    height: 100%;
+    width: 100%;
+}
+
+.main--logo {
+    height: 80%;
+}
+
+@media (max-width: 499px) {
+    .nav--desktop {
+        display: none;
+    }
+}

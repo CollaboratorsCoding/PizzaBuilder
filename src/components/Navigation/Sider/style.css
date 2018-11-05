@@ -1,0 +1,27 @@
+.main--sider {
+    position: fixed;
+    width: 280px;
+    max-width: 70%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 200;
+    background-color: rgb(82, 103, 21);
+    padding: 32px 16px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease-out;
+}
+
+@media (min-width: 500px) {
+    .main--sider {
+        display: none;
+    }
+}
+
+.main--sider--open {
+    transform: translateX(0);
+}
+
+.main--sider--close {
+    transform: translateX(-100%);
+}
