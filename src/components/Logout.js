@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Logout extends Component {
 	componentDidMount = () => {
-		this.props.logout();
+		this.props.handleLogout();
 	};
 
 	render() {

@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import OrderSummary from '../Order/OrderSummary';
 
 const Profile = ({ orders }) => {
+	if (!orders || !orders.length) return 'You dont have any orders for now';
 	const ordersRender = orders.map((order, index) => (
 		<OrderSummary
 			key={order._id}
@@ -16,6 +16,4 @@ const Profile = ({ orders }) => {
 	return <div className="header--profile">{ordersRender}</div>;
 };
 
-const mapStateToProps = state => ({ orders: state.auth.orders });
-
-export default connect(mapStateToProps)(Profile);
+export default Profile;

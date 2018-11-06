@@ -9,13 +9,11 @@ import Auth from './container/Auth/Auth';
 import PizzaMaker from './container/PizzaMaker/PizzaMaker';
 import Profile from './container/Profile/Profile';
 import Landing from './container/Landing/Landing';
-// import NotFound from './components/NotFound'
 import Logout from './components/Logout';
 import AuthActions from './store/actions/auth';
 
 const { authLogin, authRegister, authCheck, authLogout } = AuthActions;
 class App extends Component {
-	// componentDidMount () {   this.props.onTryAutoSignup(); }
 	componentWillMount = () => {
 		this.props.authCheck();
 	};
@@ -26,7 +24,7 @@ class App extends Component {
 			isLoggedIn,
 			user,
 			errors,
-			logout,
+			handleLogout,
 			handleLogin,
 			handleRegister,
 		} = this.props;
@@ -68,11 +66,17 @@ class App extends Component {
 						<Route path="/landing" component={Landing} />
 					) : null}
 
-					<Route path="/profile" exact component={Profile} />
+					<Route
+						path="/profile"
+						exact
+						render={props => (
+							<Profile {...props} orders={user.orders} />
+						)}
+					/>
 					<Route
 						path="/logout"
 						render={props => (
-							<Logout {...props} logout={() => logout()} />
+							<Logout {...props} handleLogout={handleLogout} />
 						)}
 					/>
 
@@ -84,7 +88,7 @@ class App extends Component {
 
 		return (
 			<BrowserRouter>
-				<Skeleton>{routes}</Skeleton>
+				<Skeleton {...this.props}>{routes}</Skeleton>
 			</BrowserRouter>
 		);
 	}
@@ -95,7 +99,7 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
 	authCheck: () => dispatch(authCheck()),
-	logout: () => dispatch(authLogout()),
+	handleLogout: () => dispatch(authLogout()),
 	handleLogin: userData => dispatch(authLogin(userData)),
 	handleRegister: userData => dispatch(authRegister(userData)),
 });

@@ -1,6 +1,7 @@
 const User = require('mongoose').model('User');
 const PassportLocalStrategy = require('passport-local').Strategy;
-
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 /**
  * Return the Passport Local Strategy object.
  */
@@ -18,12 +19,19 @@ module.exports = new PassportLocalStrategy(
 		};
 
 		const newUser = new User(userData);
-		newUser.save(err => {
+		newUser.save((err, user) => {
 			if (err) {
 				return done(err);
 			}
+			const payload = {
+				sub: user._id,
+				isAdmin: user.isAdmin,
+			};
 
-			return done(null);
+			// create a token string
+			const token = jwt.sign(payload, config.jwtSecret);
+
+			return done(null, token, user);
 		});
 	}
 );

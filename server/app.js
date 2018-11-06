@@ -3,12 +3,10 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 
-const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const Message = require('./models/Message');
 const config = require('./config');
 // const session = require('express-session'); var cookieParser =
 // require('cookie-parser'); const MongoStore =
@@ -37,18 +35,13 @@ const localLoginStrategy = require('./passport/local-login');
 
 passport.use('local-signup', localSignupStrategy);
 passport.use('local-login', localLoginStrategy);
-const authCheckMiddleware = require('./middleware/authCheck');
+
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
-const adminRoutes = require('./routes/admin');
 
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
-app.use('/admin', authCheckMiddleware, adminRoutes);
 
-app.get('/check', authCheckMiddleware, (req, res) => {
-	res.json({ success: true, user: res.locals.user });
-});
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
 });

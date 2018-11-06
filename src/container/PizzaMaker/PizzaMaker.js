@@ -3,14 +3,11 @@ import { Row, Col, Button, Modal, Steps } from 'antd';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PizzaView from './PizzaView';
-import {
-	addIngredient,
-	removeIngredient,
-	addOrder,
-} from '../../store/actions/pizzaMaker';
+import PizzaActions from '../../store/actions/pizzaMaker';
 
 import OrderSummary from '../Order/OrderSummary';
 
+const { addIngredient, removeIngredient, addOrder } = PizzaActions;
 const Step = Steps.Step;
 
 class PizzaMaker extends Component {
@@ -45,7 +42,10 @@ class PizzaMaker extends Component {
 				this.setState({ step: 2 });
 			}
 		} else if (this.state.step === 2) {
-			this.props.onOrderAdded(this.props.ings, this.props.totalPrice);
+			this.props.onOrderAdded({
+				ingredients: this.props.ings,
+				totalPrice: this.props.totalPrice,
+			});
 			this.setState({ visible: false, step: 0 });
 			this.props.history.push('/profile');
 		} else {
@@ -53,8 +53,7 @@ class PizzaMaker extends Component {
 		}
 	};
 
-	handleCancel = e => {
-		console.log(e);
+	handleCancel = () => {
 		this.setState({ visible: false });
 	};
 

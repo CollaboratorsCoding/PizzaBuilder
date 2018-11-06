@@ -14,16 +14,6 @@ const UserSchema = new mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
-	emailConfirmed: {
-		type: Boolean,
-		default: false,
-	},
-	orders: [
-		{
-			type: mongoose.Schema.ObjectId,
-			ref: 'Order',
-		},
-	],
 });
 
 /**

@@ -1,45 +1,32 @@
 import axios from 'axios';
-import * as actionTypes from './actionTypes';
+import * as actions from './actionTypes';
+import createActionThunk from '../actionThunk';
 
-export const addIngredient = ingredient => dispatch =>
+const PizzaActions = {};
+
+PizzaActions.addIngredient = ingredient => dispatch =>
 	dispatch({
-		type: actionTypes.ADD_INGREDIENT,
+		type: actions.ADD_INGREDIENT,
 		payload: ingredient,
 	});
 
-export const removeIngredient = ingredient => ({
-	type: actionTypes.REMOVE_INGREDIENT,
+PizzaActions.removeIngredient = ingredient => ({
+	type: actions.REMOVE_INGREDIENT,
 	payload: ingredient,
 });
 
-export const addOrder = (ingredients, totalPrice) => dispatch => {
-	const token = localStorage.getItem('token');
-	if (token !== null) {
-		return axios
-			.post(
-				'/api/neworder',
-				{
-					order: {
-						ingredients,
-						totalPrice,
-					},
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			)
-			.then(() => {
-				dispatch({
-					type: actionTypes.ADD_ORDER,
-					order: {
-						ingredients,
-						totalPrice,
-					},
-				});
-			})
-			.catch(error => console.log(error));
-	}
-	return {};
-};
+PizzaActions.addOrder = createActionThunk(actions.ADD_ORDER, data =>
+	axios.post(
+		'/api/order',
+		{
+			order: data,
+		},
+		{
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		}
+	)
+);
+
+export default PizzaActions;

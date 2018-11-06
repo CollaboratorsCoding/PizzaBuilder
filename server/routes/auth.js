@@ -81,7 +81,7 @@ router.post('/signup', (req, res, next) => {
 		return res.status(400).json({ errors: validationResult });
 	}
 
-	return passport.authenticate('local-signup', err => {
+	return passport.authenticate('local-signup', (err, token, userData) => {
 		if (err) {
 			if (err.name === 'MongoError' && err.code === 11000) {
 				// the 11000 Mongo code is for a duplication email error the 409 HTTP status
@@ -109,7 +109,8 @@ router.post('/signup', (req, res, next) => {
 		}
 		// #TODO login auto
 		return res.status(200).json({
-			success: true,
+			user: userData,
+			token,
 		});
 	})(req, res, next);
 });

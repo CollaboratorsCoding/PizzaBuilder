@@ -13,21 +13,13 @@ const authReducer = (state = initialState, action) => {
 	case `${actionTypes.AUTH_CHECK}_COMPLETED`:
 		return {
 			...state,
-			isLoggedIn: true,
-			user: action.data.user,
+			isLoggedIn: action.payload.data.isLoggedIn,
+			user: action.payload.data.user || {},
 			checkedAuth: true,
 			errors: [],
 		};
 
-	case `${actionTypes.AUTH_CHECK}_FAILED`:
-		return {
-			...state,
-			isLoggedIn: false,
-			checkedAuth: true,
-			errors: [],
-		};
-
-	case `${actionTypes.AUTH_LOGOUT}_COMPLETED`:
+	case `${actionTypes.AUTH_LOGOUT}`:
 		localStorage.removeItem('token');
 		return {
 			...state,
@@ -43,11 +35,11 @@ const authReducer = (state = initialState, action) => {
 			errors: [],
 		};
 	case `${actionTypes.AUTH_SIGNIN}_COMPLETED`:
-		localStorage.setItem('token', action.data.token);
+		localStorage.setItem('token', action.payload.data.token);
 		return {
 			...state,
 			isLoggedIn: true,
-			user: action.user,
+			user: action.payload.data.user,
 			errors: [],
 			loading: false,
 		};
@@ -63,12 +55,14 @@ const authReducer = (state = initialState, action) => {
 		return {
 			...state,
 			loading: true,
+			errors: [],
 		};
 	case `${actionTypes.AUTH_SIGNUP}_COMPLETED`:
+		localStorage.setItem('token', action.payload.data.token);
 		return {
 			...state,
 			isLoggedIn: true,
-			user: action.user,
+			user: action.payload.data.user,
 			errors: [],
 			loading: false,
 		};
@@ -77,13 +71,16 @@ const authReducer = (state = initialState, action) => {
 			...state,
 			loading: false,
 			isLoggedIn: false,
-			errors: action.errors,
+			errors: action.payload.response.data.errors,
 		};
 
-	case actionTypes.ADD_ORDER:
+	case `${actionTypes.ADD_ORDER}_COMPLETED`:
 		return {
 			...state,
-			orders: [...state.orders, action.data.order],
+			user: {
+				...state.user,
+				orders: [...state.user.orders, action.payload.data.order],
+			},
 		};
 
 	default:

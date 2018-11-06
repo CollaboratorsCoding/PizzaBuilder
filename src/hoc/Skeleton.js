@@ -1,8 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
-
-import { connect } from 'react-redux';
-
 import NavigationItems from '../components/Navigation/NavigationItems/NavigationItems';
 import SiderToggle from '../components/Navigation/Sider/SiderToggle/SiderToggle';
 import Sider from '../components/Navigation/Sider/Sider';
@@ -24,35 +21,31 @@ class Skeleton extends Component {
 	};
 
 	render() {
+		const { user, isLoggedIn, children } = this.props;
+		const { email, isAdmin } = user;
 		return (
 			<Fragment>
 				<header className="main--header">
 					<SiderToggle clicked={() => this.siderToggleHandler()} />
 					<nav className="nav--desktop">
 						<NavigationItems
-							isAuthenticated={this.props.isLoggedIn}
-							email={this.props.email}
-							isAdmin={this.props.isAdmin}
+							isAuthenticated={isLoggedIn}
+							email={email}
+							isAdmin={isAdmin}
 						/>
 					</nav>
 					<Sider
-						email={this.props.email}
-						isAdmin={this.props.isAdmin}
-						isAuthenticated={this.props.isLoggedIn}
+						email={email}
+						isAdmin={isAdmin}
+						isAuthenticated={isLoggedIn}
 						open={this.state.showSider}
 						closed={this.siderClosedHandler}
 					/>
 				</header>
-				<main className="main--content">{this.props.children}</main>
+				<main className="main--content">{children}</main>
 			</Fragment>
 		);
 	}
 }
 
-const mapStateToProps = state => ({
-	isLoggedIn: state.auth.isLoggedIn,
-	email: state.auth.email,
-	isAdmin: state.auth.isAdmin,
-});
-
-export default withRouter(connect(mapStateToProps)(Skeleton));
+export default withRouter(Skeleton);

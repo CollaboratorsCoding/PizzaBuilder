@@ -13,7 +13,7 @@ class Landing extends Component {
 		const token = localStorage.getItem('token');
 		if (token !== null) {
 			return axios
-				.get('/admin/getusers', {
+				.get('/api/users', {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
@@ -30,6 +30,7 @@ class Landing extends Component {
 	}
 
 	render() {
+		console.log(this.state.users);
 		const users = this.state.users.map(user => (
 			<tr key={user._id}>
 				<td>{user._id}</td>

@@ -11,10 +11,9 @@ class RegistrationForm extends Component {
 
 	componentDidUpdate(prevProps) {
 		const { errors, form } = this.props;
-
 		if (
 			errors.length &&
-			prevProps.errors[0].message !== errors[0].message
+			_.get(prevProps, 'errors[0].message', '') !== errors[0].message
 		) {
 			_.each(errors, err => {
 				form.setFields({

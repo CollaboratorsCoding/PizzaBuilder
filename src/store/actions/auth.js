@@ -5,7 +5,7 @@ import createActionThunk from '../actionThunk';
 const AuthActions = {};
 
 AuthActions.authCheck = createActionThunk(actions.AUTH_CHECK, () =>
-	axios.get(`/check`, {
+	axios.get(`/api/user`, {
 		headers: {
 			Authorization: `Bearer ${localStorage.getItem('token')}`,
 		},
@@ -21,24 +21,5 @@ AuthActions.authLogin = createActionThunk(actions.AUTH_SIGNIN, data =>
 );
 
 AuthActions.authLogout = () => ({ type: actions.AUTH_LOGOUT });
-
-// export const authCheck = () => {
-//     return dispatch => {
-//         const token = localStorage.getItem('token');
-//         if (token !== null) {
-//             return axios
-//                 .get('/check', {
-//                 headers: {
-//                     Authorization: "Bearer " + token
-//                 }
-//             })
-//                 .then((response) => {
-//                     dispatch({type: actions.AUTH_CHECK_SUCCESS, user: response.data.user})
-//                 })
-//                 .catch(error => dispatch({type: actions.AUTH_CHECK_FAIL}))
-//         }
-//         dispatch({type: actions.AUTH_CHECK_FAIL})
-//     };
-// };
 
 export default AuthActions;
