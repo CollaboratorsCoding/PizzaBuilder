@@ -12,11 +12,11 @@ AuthActions.authCheck = createActionThunk(actions.AUTH_CHECK, () =>
 	})
 );
 
-AuthActions.authLogin = createActionThunk(actions.AUTH_SIGNUP, data =>
+AuthActions.authRegister = createActionThunk(actions.AUTH_SIGNUP, data =>
 	axios.post('/auth/signup', data)
 );
 
-AuthActions.authRegister = createActionThunk(actions.AUTH_SIGNIN, data =>
+AuthActions.authLogin = createActionThunk(actions.AUTH_SIGNIN, data =>
 	axios.post('/auth/login', data)
 );
 

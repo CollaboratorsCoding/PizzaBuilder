@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Row, Col, Button, Modal, Steps } from 'antd';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import PizzaView from './PizzaView';
 import {
 	addIngredient,
 	removeIngredient,
 	addOrder,
 } from '../../store/actions/pizzaMaker';
-import OneRoot from '../../hoc/OneRoot';
+
 import OrderSummary from '../Order/OrderSummary';
-import axios from 'axios';
 
 const Step = Steps.Step;
 
@@ -26,7 +26,7 @@ class PizzaMaker extends Component {
 			.then(response => {
 				this.setState({ ingredients: response.data });
 			})
-			.catch((error) => {
+			.catch(error => {
 				console.log(error);
 			});
 	};
@@ -37,7 +37,7 @@ class PizzaMaker extends Component {
 		}
 	};
 
-	handleOk = e => {
+	handleOk = () => {
 		if (this.state.step === 1) {
 			if (!this.props.isLoggedIn) {
 				this.props.history.push('/auth');
@@ -62,29 +62,27 @@ class PizzaMaker extends Component {
 	// 'ingredient--full ingredient--active'     :
 	render() {
 		const listIngredients = this.state.ingredients.map(ingredient => (
-				<div
-					key={ingredient.label}
-					onClick={() => this.props.onIngredientAdded(ingredient)}
-					className={
-						this.props.ings.findIndex(
-							element => element.value === ingredient.value
-						) !== -1
-							? 'ingredient--full ingredient--active'
-							: 'ingredient--full'
-					}
-				>
-					<img
-						className="ingredient--image"
-						src={'/' + ingredient.img}
-						alt=""
-					/>
-					<div className="ingredient--caption">
-						{ingredient.value}
-					</div>
-				</div>
-			));
+			<div
+				key={ingredient.label}
+				onClick={() => this.props.onIngredientAdded(ingredient)}
+				className={
+					this.props.ings.findIndex(
+						element => element.value === ingredient.value
+					) !== -1
+						? 'ingredient--full ingredient--active'
+						: 'ingredient--full'
+				}
+			>
+				<img
+					className="ingredient--image"
+					src={`/${ingredient.img}`}
+					alt=""
+				/>
+				<div className="ingredient--caption">{ingredient.value}</div>
+			</div>
+		));
 		return (
-			<OneRoot>
+			<Fragment>
 				<Row>
 					<Col xs={24} sm={24} md={12} lg={10} xl={10}>
 						<div className="ingredients--wrapper">
@@ -140,23 +138,23 @@ class PizzaMaker extends Component {
 					</Col>
 					<Col xs={24} sm={24} md={6} lg={4} xl={4} />
 				</Row>
-			</OneRoot>
+			</Fragment>
 		);
 	}
 }
 const mapStateToProps = state => ({
-		ings: state.pizzaMaker.ingredients,
-		totalPrice: state.pizzaMaker.totalPrice,
-		isLoggedIn: state.auth.isLoggedIn,
-	});
+	ings: state.pizzaMaker.ingredients,
+	totalPrice: state.pizzaMaker.totalPrice,
+	isLoggedIn: state.auth.isLoggedIn,
+});
 const mapDispatchToProps = dispatch => ({
-		onIngredientAdded: ingredientData =>
-			dispatch(addIngredient(ingredientData)),
-		onIngredientRemoved: ingredientData =>
-			dispatch(removeIngredient(ingredientData)),
-		onOrderAdded: (ingredientData, totalPrice) =>
-			dispatch(addOrder(ingredientData, totalPrice)),
-	});
+	onIngredientAdded: ingredientData =>
+		dispatch(addIngredient(ingredientData)),
+	onIngredientRemoved: ingredientData =>
+		dispatch(removeIngredient(ingredientData)),
+	onOrderAdded: (ingredientData, totalPrice) =>
+		dispatch(addOrder(ingredientData, totalPrice)),
+});
 
 export default connect(
 	mapStateToProps,

@@ -2,18 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './styles.css';
 
-export class Landing extends Component {
+class Landing extends Component {
 	state = {
 		className: 'hidden',
 		users: [],
 	};
-
-	handleScroll() {
-		if (document.documentElement.scrollTop > 430) {
-			this.setState({ className: 'show' });
-		}
-	}
-
+	// eslint-disable-next-line
 	componentDidMount() {
 		window.onscroll = () => this.handleScroll();
 		const token = localStorage.getItem('token');
@@ -24,10 +18,14 @@ export class Landing extends Component {
 						Authorization: `Bearer ${token}`,
 					},
 				})
-				.then(response => {
-					this.setState({ users: response.data.users });
-				})
-				.catch(error => {});
+				.then(response => this.setState({ users: response.data.users }))
+				.catch(() => {});
+		}
+	}
+
+	handleScroll() {
+		if (document.documentElement.scrollTop > 430) {
+			this.setState({ className: 'show' });
 		}
 	}
 

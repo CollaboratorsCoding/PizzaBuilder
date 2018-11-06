@@ -25,7 +25,7 @@ class App extends Component {
 			checkedAuth,
 			isLoggedIn,
 			user,
-			error,
+			errors,
 			logout,
 			handleLogin,
 			handleRegister,
@@ -49,7 +49,7 @@ class App extends Component {
 							<Auth
 								{...props}
 								user={user}
-								error={error}
+								errors={errors}
 								handleLogin={handleLogin}
 								handleRegister={handleRegister}
 							/>
@@ -96,7 +96,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	authCheck: () => dispatch(authCheck()),
 	logout: () => dispatch(authLogout()),
-	handleLogin: (token, userData) => dispatch(authLogin(token, userData)),
+	handleLogin: userData => dispatch(authLogin(userData)),
 	handleRegister: userData => dispatch(authRegister(userData)),
 });
 

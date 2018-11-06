@@ -11,6 +11,8 @@
 		"linebreak-style": 0,
 		"react/destructuring-assignment": 0,
 		"indent": ["warn", "tab"],
+		"no-use-before-define": 0,
+		"no-param-reassign": 0,
 		"react/jsx-filename-extension": [
 			1,
 			{

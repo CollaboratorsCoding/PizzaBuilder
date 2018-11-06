@@ -4,52 +4,86 @@ const initialState = {
 	isLoggedIn: false,
 	user: {},
 	checkedAuth: false,
-	error: {},
+	errors: [],
+	loading: false,
 };
 
 const authReducer = (state = initialState, action) => {
 	switch (action.type) {
-	case actionTypes.AUTH_CHECK_SUCCESS:
+	case `${actionTypes.AUTH_CHECK}_COMPLETED`:
 		return {
+			...state,
 			isLoggedIn: true,
-			email: action.user.email,
-			isAdmin: action.user.isAdmin,
-			loaded: true,
-			orders: action.user.orders,
+			user: action.data.user,
+			checkedAuth: true,
+			errors: [],
 		};
 
-	case actionTypes.AUTH_CHECK_FAIL:
+	case `${actionTypes.AUTH_CHECK}_FAILED`:
 		return {
 			...state,
 			isLoggedIn: false,
-			loaded: true,
-			orders: [],
+			checkedAuth: true,
+			errors: [],
 		};
 
-	case actionTypes.AUTH_LOGOUT:
+	case `${actionTypes.AUTH_LOGOUT}_COMPLETED`:
 		localStorage.removeItem('token');
 		return {
 			...state,
 			isLoggedIn: false,
-			loaded: true,
-			orders: [],
+			user: {},
+			errors: [],
 		};
 
-	case actionTypes.AUTH_LOGIN:
-		localStorage.setItem('token', action.token);
+	case `${actionTypes.AUTH_SIGNIN}_START`:
 		return {
 			...state,
-			loaded: true,
+			loading: true,
+			errors: [],
+		};
+	case `${actionTypes.AUTH_SIGNIN}_COMPLETED`:
+		localStorage.setItem('token', action.data.token);
+		return {
+			...state,
 			isLoggedIn: true,
-			email: action.user.email,
-			isAdmin: action.user.isAdmin,
-			orders: action.user.orders,
+			user: action.user,
+			errors: [],
+			loading: false,
+		};
+	case `${actionTypes.AUTH_SIGNIN}_FAILED`:
+		return {
+			...state,
+			loading: false,
+			isLoggedIn: false,
+			errors: action.payload.response.data.errors,
+		};
+
+	case `${actionTypes.AUTH_SIGNUP}_START`:
+		return {
+			...state,
+			loading: true,
+		};
+	case `${actionTypes.AUTH_SIGNUP}_COMPLETED`:
+		return {
+			...state,
+			isLoggedIn: true,
+			user: action.user,
+			errors: [],
+			loading: false,
+		};
+	case `${actionTypes.AUTH_SIGNUP}_FAILED`:
+		return {
+			...state,
+			loading: false,
+			isLoggedIn: false,
+			errors: action.errors,
 		};
 
 	case actionTypes.ADD_ORDER:
 		return {
 			...state,
-			orders: [...state.orders, action.order],
+			orders: [...state.orders, action.data.order],
 		};
 
 	default:

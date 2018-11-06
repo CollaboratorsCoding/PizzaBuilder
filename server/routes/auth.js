@@ -12,17 +12,17 @@ const router = new express.Router();
  *                   errors tips, and a global message for the whole form.
  */
 function validateSignupForm(payload) {
-	const error = {};
-	let isFormValid = true;
-	let message = '';
-
+	const errors = [];
 	if (
 		!payload ||
 		typeof payload.email !== 'string' ||
 		!validator.isEmail(payload.email)
 	) {
-		isFormValid = false;
-		error.email = 'Please provide a correct email address.';
+		errors.push({
+			fieldName: 'email',
+			fieldValue: payload.email,
+			message: 'Please provide a correct email address.',
+		});
 	}
 
 	if (
@@ -30,15 +30,14 @@ function validateSignupForm(payload) {
 		typeof payload.password !== 'string' ||
 		payload.password.trim().length < 8
 	) {
-		isFormValid = false;
-		error.password = 'Password must have at least 8 characters.';
+		errors.push({
+			fieldName: 'password',
+			fieldValue: payload.password,
+			message: 'Password must have at least 8 characters.',
+		});
 	}
 
-	if (!isFormValid) {
-		message = 'Check the form for errors.';
-	}
-
-	return { success: isFormValid, message, error };
+	return errors;
 }
 
 /**
@@ -49,19 +48,17 @@ function validateSignupForm(payload) {
  *                   errors tips, and a global message for the whole form.
  */
 function validateLoginForm(payload) {
-	const error = {
-		type: 'form',
-		formData: {},
-	};
-	let isFormValid = true;
-
+	const errors = [];
 	if (
 		!payload ||
 		typeof payload.email !== 'string' ||
 		payload.email.trim().length === 0
 	) {
-		isFormValid = false;
-		error.email = 'Please provide your email address.';
+		errors.push({
+			fieldName: 'email',
+			fieldValue: payload.email,
+			message: 'Please provide your email address.',
+		});
 	}
 
 	if (
@@ -69,28 +66,19 @@ function validateLoginForm(payload) {
 		typeof payload.password !== 'string' ||
 		payload.password.trim().length === 0
 	) {
-		isFormValid = false;
-		error.formData = {
-			fieldName: '',
-		};
-		error.password = 'Please provide your password.';
+		errors.push({
+			fieldName: 'password',
+			fieldValue: payload.password,
+			message: 'Please provide your password.',
+		});
 	}
-
-	if (!isFormValid) {
-		error.message = 'Check the form for errors.';
-	}
-
-	return { success: isFormValid, error };
+	return errors;
 }
 
 router.post('/signup', (req, res, next) => {
 	const validationResult = validateSignupForm(req.body);
-	if (!validationResult.success) {
-		return res.status(400).json({
-			success: false,
-			message: validationResult.message,
-			error: validationResult.errors,
-		});
+	if (validationResult.length) {
+		return res.status(400).json({ errors: validationResult });
 	}
 
 	return passport.authenticate('local-signup', err => {
@@ -99,35 +87,38 @@ router.post('/signup', (req, res, next) => {
 				// the 11000 Mongo code is for a duplication email error the 409 HTTP status
 				// code is for conflict error
 				return res.status(409).json({
-					success: false,
-					message: 'Check the form for errors.',
-					errors: {
-						email: 'Ten adres email już jest używany',
-					},
+					errors: [
+						{
+							fieldName: 'email',
+							fieldValue: req.body.email,
+							message: 'Email is already in use.',
+						},
+					],
 				});
 			}
 
 			return res.status(400).json({
-				success: false,
-				message: 'Could not process the form.',
+				errors: [
+					{
+						fieldName: 'email',
+						fieldValue: req.body.email,
+						message: 'Unexpected error',
+					},
+				],
 			});
 		}
-
+		// #TODO login auto
 		return res.status(200).json({
 			success: true,
-			message:
-				'You have successfully signed up! Now you should be able to log in.',
 		});
 	})(req, res, next);
 });
 
 router.post('/login', (req, res, next) => {
 	const validationResult = validateLoginForm(req.body);
-	if (!validationResult.success) {
+	if (validationResult.length) {
 		return res.status(400).json({
-			success: false,
-			message: validationResult.message,
-			errors: validationResult.errors,
+			erorrs: validationResult,
 		});
 	}
 
@@ -135,17 +126,24 @@ router.post('/login', (req, res, next) => {
 		if (err) {
 			if (err.name === 'IncorrectCredentialsError') {
 				return res.status(409).json({
-					success: false,
-					message: 'Check the form for errors.',
-					errors: {
-						loginEmail: err.message,
-					},
+					errors: [
+						{
+							fieldName: 'password',
+							fieldValue: req.body.password,
+							message: 'Wrongs password',
+						},
+					],
 				});
 			}
 
 			return res.status(400).json({
-				success: false,
-				message: 'Could not process the form.',
+				errors: [
+					{
+						fieldName: 'password',
+						fieldValue: req.body.password,
+						message: 'Unexpected error',
+					},
+				],
 			});
 		}
 

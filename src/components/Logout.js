@@ -1,17 +1,13 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
 
-export class Logout extends Component {
-    componentDidMount = () => {
-        this
-            .props
-            .logout()
-    }
-    render() {
+class Logout extends Component {
+	componentDidMount = () => {
+		this.props.logout();
+	};
 
-        return (
-            <div></div>
-        )
-    }
+	render() {
+		return <div />;
+	}
 }
 
-export default Logout
+export default Logout;

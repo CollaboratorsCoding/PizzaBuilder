@@ -17,10 +17,10 @@ class Auth extends Component {
 
 	render() {
 		const { signUp } = this.state;
-		const { error, handleLogin, handleRegister } = this.props;
-		let form = <SignUp error={error} sendForm={handleRegister} />;
+		const { errors, handleLogin, handleRegister } = this.props;
+		let form = <SignUp errors={errors} sendForm={handleRegister} />;
 		if (!signUp) {
-			form = <SignIn error={error} sendForm={handleLogin} />;
+			form = <SignIn errors={errors} sendForm={handleLogin} />;
 		}
 		return (
 			<div className="header">

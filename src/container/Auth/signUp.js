@@ -10,18 +10,19 @@ class RegistrationForm extends Component {
 	};
 
 	componentDidUpdate(prevProps) {
-		const { error, form } = this.props;
+		const { errors, form } = this.props;
 
 		if (
-			!_.isEmpty(error) &&
-			error.type === 'form' &&
-			prevProps.error.message !== error.message
+			errors.length &&
+			prevProps.errors[0].message !== errors[0].message
 		) {
-			form.setFields({
-				[_.get(error, 'formData.fieldName', '')]: {
-					value: _.get(error, 'formData.fieldValue', ''),
-					errors: [new Error(error.message)],
-				},
+			_.each(errors, err => {
+				form.setFields({
+					[_.get(err, 'fieldName', '')]: {
+						value: _.get(err, 'fieldValue', ''),
+						errors: [new Error(err.message)],
+					},
+				});
 			});
 		}
 	}
