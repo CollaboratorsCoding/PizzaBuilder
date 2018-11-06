@@ -7,21 +7,21 @@ const navigationItems = props => {
 	const menuitemsNotLogged = [
 		{
 			path: '/',
-			name: 'Конструктор Пиццы',
+			name: 'Pizza Builder',
 		},
 		{
 			path: '/auth',
-			name: 'Регистрация/Логин',
+			name: 'SignUp/SignIn',
 		},
 	];
 	const menuitemsLogged = [
 		{
 			path: '/',
-			name: 'Конструктор Пиццы',
+			name: 'Pizza Builder',
 		},
 		{
 			path: '/logout',
-			name: 'Выйти',
+			name: 'Logout',
 		},
 		{
 			path: '/profile',

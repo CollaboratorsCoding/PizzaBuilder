@@ -26,7 +26,8 @@ class Auth extends Component {
 			<div className="header">
 				<div className="form--signup">{form}</div>
 				<Button onClick={() => this.changeForm()} type="dashed">
-					{signUp ? 'Sign In' : 'Sign Up'}
+					Switch to{' '}
+					<strong>{signUp ? ' Sign In' : ' Sign Up'}</strong>
 				</Button>
 			</div>
 		);

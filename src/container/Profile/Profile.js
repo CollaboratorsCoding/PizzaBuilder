@@ -2,7 +2,17 @@ import React from 'react';
 import OrderSummary from '../Order/OrderSummary';
 
 const Profile = ({ orders }) => {
-	if (!orders || !orders.length) return 'You dont have any orders for now';
+	if (!orders || !orders.length)
+		return (
+			<div
+				style={{
+					textAlign: 'center',
+					fontWeight: 'bold',
+				}}
+			>
+				You dont have any orders now
+			</div>
+		);
 	const ordersRender = orders.map((order, index) => (
 		<OrderSummary
 			key={order._id}

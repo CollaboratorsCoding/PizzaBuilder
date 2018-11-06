@@ -33,7 +33,7 @@ const OrderSummary = props => {
 								<td>
 									<img
 										className="ingredient--order--image"
-										src={`/${  ingredient.img}`}
+										src={`/${ingredient.img}`}
 										alt=""
 									/>
 								</td>
@@ -44,7 +44,7 @@ const OrderSummary = props => {
 								</td>
 								<td>
 									<div className="ingredient--order--price">
-										Цена : {ingredient.price}
+										Price : {ingredient.price}
 									</div>
 								</td>
 							</tr>
@@ -53,16 +53,19 @@ const OrderSummary = props => {
 					<tfoot>
 						<tr>
 							<td className="total--price">
-								Полная цена:{' '}
-								{Math.round(
-									(Number(props.totalPrice) + 0.00001) * 100
-								) / 100}
+								Total price:{' '}
+								<strong>
+									{Math.round(
+										(Number(props.totalPrice) + 0.00001) *
+											100
+									) / 100}
+								</strong>
 							</td>
 						</tr>
 						{props.date ? (
 							<tr>
 								<td className="total--price">
-									Дата: {props.date}
+									Date: {props.date}
 								</td>
 							</tr>
 						) : null}

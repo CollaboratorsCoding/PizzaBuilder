@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
 			...state,
 			ingredients: [...state.ingredients],
 		};
-		console.log(action.payload);
+
 		const isIngredient = newState.ingredients.filter(
 			item => item.value === action.payload.value
 		);

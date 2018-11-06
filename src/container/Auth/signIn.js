@@ -49,7 +49,7 @@ class signIn extends Component {
 						],
 					})(<Input />)}
 				</FormItem>
-				<FormItem label="Пароль" hasFeedback>
+				<FormItem label="Password" hasFeedback>
 					{getFieldDecorator('password', {
 						rules: [
 							{

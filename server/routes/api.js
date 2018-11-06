@@ -20,7 +20,6 @@ router.get('/users', authCheckMiddleware, (req, res) => {
 
 router.post('/order', authCheckMiddleware, (req, res) => {
 	if (!!req.user && !!req.body.order) {
-		console.log(req.user);
 		const order = new Order({
 			parentId: req.user._id,
 			ingredients: req.body.order.ingredients,

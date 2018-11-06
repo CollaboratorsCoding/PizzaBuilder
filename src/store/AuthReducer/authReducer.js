@@ -79,7 +79,10 @@ const authReducer = (state = initialState, action) => {
 			...state,
 			user: {
 				...state.user,
-				orders: [...state.user.orders, action.payload.data.order],
+				orders: [
+					...(state.user.orders || []),
+					action.payload.data.order,
+				],
 			},
 		};
 

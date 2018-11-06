@@ -57,8 +57,6 @@ class PizzaMaker extends Component {
 		this.setState({ visible: false });
 	};
 
-	// this     .props     .ings     .indexOf(ingredient.value) !== -1     ?
-	// 'ingredient--full ingredient--active'     :
 	render() {
 		const listIngredients = this.state.ingredients.map(ingredient => (
 			<div
@@ -106,23 +104,23 @@ class PizzaMaker extends Component {
 								className="order--btn"
 								onClick={this.showModal}
 							>
-								Заказать
+								Make Order
 							</Button>
 						) : null}
 						<Modal
-							title="Подтверждение заказа"
+							title="Order confirmation"
 							visible={this.state.visible}
 							onOk={this.handleOk}
 							onCancel={this.handleCancel}
-							okText="Дальше"
-							cancelText="Отменить"
+							okText="Next"
+							cancelText="Cancel"
 							width={800}
 						>
 							<div>
 								<Steps current={this.state.step}>
-									<Step title="Конструктор Пиццы" />
-									<Step title="Подтверждение" />
-									<Step title="Оплата" />
+									<Step title="Pizza Builder" />
+									<Step title="Confirmation" />
+									<Step title="Payment" />
 								</Steps>
 								{this.state.step === 1 ? (
 									<OrderSummary
@@ -131,6 +129,9 @@ class PizzaMaker extends Component {
 										totalPrice={this.props.totalPrice}
 										inModal
 									/>
+								) : null}
+								{this.state.step === 2 ? (
+									<div>Payment</div>
 								) : null}
 							</div>
 						</Modal>
