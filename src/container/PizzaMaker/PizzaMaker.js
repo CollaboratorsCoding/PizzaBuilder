@@ -23,9 +23,7 @@ class PizzaMaker extends Component {
 			.then(response => {
 				this.setState({ ingredients: response.data });
 			})
-			.catch(error => {
-				console.log(error);
-			});
+			.catch(error => error);
 	};
 
 	showModal = () => {
