@@ -6,6 +6,8 @@
 
 ### Folders
 
+Demo - https://react-pizzabuilder-auth.herokuapp.com
+
 `./` - CLIENT code and CRA dev server (React.js, AntDesign UI library) <br>
 `./server` - SERVER code (NodeJS, Mongo)
 
